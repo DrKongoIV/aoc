@@ -1,0 +1,15 @@
+#!/bin/bash
+
+SESSION=<insert session id here>
+
+if [ "$1" -lt 10 ]; then
+    DIR="0$1"
+else
+    DIR=$1
+fi
+
+SCRIPT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+mkdir "$SCRIPT_DIR/$DIR"
+touch "$SCRIPT_DIR/$DIR/a.rs"
+
+curl "https://adventofcode.com/2021/day/$1/input" -b session=$SESSION >"$SCRIPT_DIR/$DIR/input"
