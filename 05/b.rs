@@ -1,10 +1,10 @@
 use std::cmp;
 use std::io;
 use std::io::BufRead;
-use std::collections::BTreeMap;
+use std::collections::HashMap;
 
 fn main() {
-    let mut points = BTreeMap::new();
+    let mut points = HashMap::new();
     let mut counter = 0;
     for line in io::stdin().lock().lines().map(|l| l.unwrap()) {
         let coords : Vec<Vec<i32>> = line.split(" -> ").map(|s| s.split(",").map(|n| n.parse::<i32>().unwrap()).collect()).collect();
