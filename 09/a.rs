@@ -21,7 +21,6 @@ fn main() {
                 low_point &= input[i][j+1] > v;
             }
             if low_point {
-                println!("Low point at {},{}: {}", i, j, v);
                 acc += 1 + v;
             }
         }
