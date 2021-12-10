@@ -1,48 +1,55 @@
 use std::io;
 use std::io::BufRead;
 
-fn pair(c : char) -> Option<char> {
+#[derive(PartialEq)]
+enum Enclosing {
+    Parenthesis,
+    Bracket,
+    Brace,
+    Chevron,
+}
+
+fn identify(c : char) -> Option<(Enclosing, bool)> {
     match c {
-        ')' => Some('('),
-        ']' => Some('['),
-        '}' => Some('{'),
-        '>' => Some('<'),
-        _ => None
+        '(' => Some((Enclosing::Parenthesis, true)),
+        ')' => Some((Enclosing::Parenthesis, false)),
+        '[' => Some((Enclosing::Bracket, true)),
+        ']' => Some((Enclosing::Bracket, false)),
+        '{' => Some((Enclosing::Brace, true)),
+        '}' => Some((Enclosing::Brace, false)),
+        '<' => Some((Enclosing::Chevron, true)),
+        '>' => Some((Enclosing::Chevron, false)),
+        _ => None,
     }
 }
 
 fn main() {
     let mut scores : Vec<u64> = Vec::new();
     for line in io::stdin().lock().lines().map(|l| l.unwrap()) {
-        let mut stack : Vec<char> = Vec::new();
         let mut corrupted = false;
-        for c in line.chars() {
-            let opening = pair(c);
-            match opening {
-                None => stack.push(c),
-                Some(d) => {
-                    if d == *stack.last().unwrap() {
-                        stack.pop();
-                    } else {
-                        corrupted = true;
-                        break;
-                    }
-                }
+        let mut stack : Vec<Enclosing> = Vec::new();
+        for (kind, opens) in line.chars().map(|c| identify(c).unwrap()) {
+            if opens {
+                stack.push(kind);
+            } else if kind == *stack.last().unwrap() {
+                stack.pop();
+            } else {
+                corrupted = true;
+                break;
             }
         }
         if !corrupted {
-            let mut tmp = 0;
+            let mut acc = 0;
             for c in stack.into_iter().rev() {
-                tmp *= 5;
+                acc *= 5;
                 match c {
-                    '(' => tmp += 1,
-                    '[' => tmp += 2,
-                    '{' => tmp += 3,
-                    '<' => tmp += 4,
-                    _ => ()
+                    Enclosing::Parenthesis => acc += 1,
+                    Enclosing::Bracket => acc += 2,
+                    Enclosing::Brace => acc += 3,
+                    Enclosing::Chevron => acc += 4,
                 }
             }
-            scores.push(tmp);
+            scores.push(acc);
         }
     }
     scores.sort();
