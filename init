@@ -9,7 +9,17 @@ else
 fi
 
 SCRIPT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
-mkdir "$SCRIPT_DIR/$DIR"
-touch "$SCRIPT_DIR/$DIR/a.rs"
+mkdir -p "$SCRIPT_DIR/$DIR"
 
-curl "https://adventofcode.com/2021/day/$1/input" -b session=$SESSION >"$SCRIPT_DIR/$DIR/input"
+if [ ! -f "$SCRIPT_DIR/$DIR/a.rs" ]; then
+    printf "fn main() {\n    \n}\n" >"$SCRIPT_DIR/$DIR/a.rs"
+fi
+if [ ! -f "$SCRIPT_DIR/$DIR/b.rs" ]; then
+    printf "fn main() {\n    \n}\n" >"$SCRIPT_DIR/$DIR/b.rs"
+fi
+if ! grep -q $DIR "$SCRIPT_DIR/Cargo.toml"; then
+    printf "\n[[bin]]\nname = \"%s_a\"\npath = \"%s/a.rs\"\n" "$DIR" "$DIR" >>"$SCRIPT_DIR/Cargo.toml"
+    printf "\n[[bin]]\nname = \"%s_b\"\npath = \"%s/b.rs\"\n" "$DIR" "$DIR" >>"$SCRIPT_DIR/Cargo.toml"
+fi
+
+curl "https://adventofcode.com/2021/day/$1/input" -sb session=$SESSION >"$SCRIPT_DIR/$DIR/input"
