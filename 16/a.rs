@@ -5,7 +5,7 @@ use std::vec::IntoIter;
 
 struct Packet {
     version: u8,
-    type_id: u8,
+    _type_id: u8,
     payload: Payload
 }
 
@@ -50,7 +50,7 @@ fn parse_packet(bits : &mut IntoIter<u8>) -> Option<Packet> {
         4 => Payload::Literal(parse_literal(bits)?),
         _ => Payload::Packets(parse_operator(bits)?),
     };
-    Some(Packet { version, type_id, payload })
+    Some(Packet { version: version, _type_id: type_id, payload: payload })
 }
 
 fn sum_versions(p : &Packet) -> u32 {
