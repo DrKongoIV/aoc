@@ -32,7 +32,7 @@ fn next_gen(iea: &Vec<bool>, old_img: &Image, pad: bool) -> Image {
             let index = (-1..=1).flat_map(|dy| (-1..=1).map(move |dx| {
                 let (xdx, ydy) = (x+dx, y+dy);
                 if xdx < old_img.x_bounds.0 || xdx > old_img.x_bounds.1
-                || ydy < old_img.y_bounds.0 || ydy > old_img.x_bounds.1 {
+                || ydy < old_img.y_bounds.0 || ydy > old_img.y_bounds.1 {
                     pad
                 } else {
                     old_img.points.contains(&(xdx, ydy))
