@@ -66,14 +66,16 @@ fn main() {
             }
         }
     }
-    // ASSUMPTION about the image enhancement algorithm:
-    // 0b111111111 -> '.'
-    // 0b000000000 -> '#'
-    // Hence, the padding is inverted each iteration
     let mut pad = false;
+    let mut toggle = iea[0];
     for _ in 0..50 {
         img = next_gen(&iea, &img, pad);
-        pad = !pad;
+        if toggle {
+            pad = !pad;
+        }
+        if iea[0b111111111] {
+            toggle = false;
+        }
     }
     println!("{}", img.points.len());
 }
